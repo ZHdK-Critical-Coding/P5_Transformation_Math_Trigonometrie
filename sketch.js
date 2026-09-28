@@ -1,4 +1,5 @@
 const curves = []
+const backgroundColor = 220
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -8,7 +9,7 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(backgroundColor);
   curves.forEach(curve => curve.draw())
 }
 
@@ -33,14 +34,18 @@ class trigonometryCurve {
     })
     this.coords = this.coords.slice(-this.trailSize)
     this.coords.forEach((coord, count) => {
-      fill(
-        this.color[0] - (255 / this.trailSize * (Math.abs(this.coords.length - count))),
-        this.color[1] - (255 / this.trailSize * (Math.abs(this.coords.length - count))),
-        this.color[2] - (255 / this.trailSize * (Math.abs(this.coords.length - count)))
-      )
+      const screenY = (height / 2) + ((height / 4) * coord.y)
+      // Skip points outside the canvas (tan() grows towards infinity near its poles)
+      if (screenY < 0 || screenY > height) return
+      // Older points fade from the curve colour towards the background colour
+      fill(lerpColor(
+        color(this.color),
+        color(backgroundColor),
+        Math.abs(this.coords.length - count) / this.trailSize
+      ))
       circle(
         coord.x, 
-        (height / 2) + ((height / 4) * coord.y),
+        screenY,
         max(1, this.dotsize - (this.dotsize / this.trailSize * (Math.abs(this.coords.length - count))))
       )
     })

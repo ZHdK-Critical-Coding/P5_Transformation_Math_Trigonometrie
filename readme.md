@@ -10,17 +10,19 @@ oscillating motion.
 
 ## Installation
 
+Libraries (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (included, not used).
+
+## How to Run
+
 1. Open the folder in Visual Studio Code and start Live Server (click
    **Go Live** in the status bar).
-
-Libraries (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (included, not used).
 
 ## Coding Help
 
 - **`sketch.js` → `setup()`**: creates a full-window canvas and adds three
   curves to `curves`: `sin` in red, `cos` in green, `tan` in blue. Add,
   remove or change curves here.
-- **`draw()`**: clears the background and calls `draw()` on every curve.
+- **`draw()`**: clears the background with `backgroundColor` and calls `draw()` on every curve.
 - **`class trigonometryCurve`**: the constructor takes the function, the
   colour and optionally `frequency` (number of periods across the width,
   default 2), `trailSize` (number of stored points, 100), `speed` (degrees
@@ -28,5 +30,7 @@ Libraries (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (included, not used).
 - **`trigonometryCurve.draw()`**: computes x from `frameCount` (wrapping
   at the right edge) and y from the trig function, stores the point and
   keeps only the last `trailSize` points. Older points are drawn smaller
-  and darker. y is scaled by a quarter of the height around the middle, so
-  `tan()` shoots off the canvas near its poles.
+  and fade towards the background colour (`backgroundColor`, blended with
+  `lerpColor()`). y is scaled by a quarter of the height around the middle;
+  points that would land outside the canvas (`tan()` near its poles) are
+  skipped.
